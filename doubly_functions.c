@@ -1,24 +1,6 @@
 #include "monty.h"
 
 /**
- * free_stack_t - frees the doubly linked list
- *
- * @head: head of the list
- * Return: no return
- */
-
-void free_stack_t(stack_t  *head)
-{
-	stack_t *tmp;
-
-	while ((tmp = head) != NULL)
-	{
-		head = head->next;
-		free(tmp);
-	}
-}
-
-/**
  *add_dnodeint_end - add a note at the end of the doubly link list
  *@head: first position of linked list
  *@n: data to store
@@ -33,11 +15,12 @@ stack_t *add_dnodeint_end(stack_t **head, const int n)
 	temp = malloc(sizeof(stack_t));
 	if (!temp)
 	{
-		fprintf(stderr, "Error: malloc failed\n");
-		free_v_glo();
+		dprintf(2, "Error: malloc failed\n");
+		free_vglo();
 		exit(EXIT_FAILURE);
 	}
 	temp->n = n;
+	/*Careful with the first time*/
 	if (*head == NULL)
 	{
 		temp->next = *head;
@@ -46,7 +29,7 @@ stack_t *add_dnodeint_end(stack_t **head, const int n)
 		return (*head);
 	}
 	aux = *head;
-	while (aux->next != NULL)
+	while (aux->next)
 		aux = aux->next;
 	temp->next = aux->next;
 	temp->prev = aux;
@@ -69,11 +52,12 @@ stack_t *add_dnodeint(stack_t **head, const int n)
 	temp = malloc(sizeof(stack_t));
 	if (!temp)
 	{
-		fprintf(stderr, "Error: malloc failed\n");
-		free_v_glo();
+		dprintf(2, "Error: malloc failed\n");
+		free_vglo();
 		exit(EXIT_FAILURE);
 	}
 	temp->n = n;
+	/*Careful with the first time*/
 	if (*head == NULL)
 	{
 		temp->next = *head;
@@ -88,3 +72,19 @@ stack_t *add_dnodeint(stack_t **head, const int n)
 	return (*head);
 }
 
+/**
+ * free_dlistint - frees the doubly linked list
+ *
+ * @head: head of the list
+ * Return: no return
+ */
+void free_dlistint(stack_t *head)
+{
+	stack_t *tmp;
+
+	while ((tmp = head) != NULL)
+	{
+		head = head->next;
+		free(tmp);
+	}
+}
