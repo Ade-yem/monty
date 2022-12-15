@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
 		if (!f)
 		{
 			fprintf(stderr, "L%u: ", v_glo.cont);
-			dprintf(2, "unknown instruction %s\n", str[0]);
+			fprintf(stderr, "unknown instruction %s\n", str[0]);
 			free_v_glo();
 			exit(EXIT_FAILURE);
 		}
