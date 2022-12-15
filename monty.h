@@ -1,10 +1,14 @@
 #ifndef MONTY_H_
 #define MONTY_H_
-#include <stdlib.h>
-#include <stddef.h>
+
 #include <stdio.h>
-#include <string.h>
+#include <stdlib.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <ctype.h>
+#include <string.h>
 
 /**
  * struct stack_s - doubly linked list representation of a stack (or queue)
@@ -60,9 +64,22 @@ typedef struct globals
 
 extern global_t v_glo;
 
-char *split(char *line);
 void start_v_glo(FILE *fd);
+void (*get_opcodes(char *opc))(stack_t **stack, unsigned int line_number);
+void push(stack_t **stack, unsigned int line_number);
+void pall(stack_t **stack, unsigned int line_number);
+void pint(stack_t **stack, unsigned int line_number);
+void pop(stack_t **stack, unsigned int line_number);
+void swap(stack_t **stack, unsigned int line_number);
+void add(stack_t **stack, unsigned int line_number);
+void nop(stack_t **stack, unsigned int line_number);
+
+/* free */
+void free_stack_t(stack_t *head);
 void free_v_glo(void);
+/* stack */
+stack_t *add_dnodeint(stack_t **head, const int n);
+stack_t *add_dnodeint_end(stack_t **head, const int n);
 
 
 

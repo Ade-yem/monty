@@ -20,37 +20,16 @@ void start_v_glo(FILE *fd)
 }
 
 /**
- * free_vglo - frees the global variables
+ * free_v_glo - frees the global variables
  *
  * Return: no return
  */
 
 void free_v_glo(void)
 {
-	free_dlistint(v_glo.head);
+	free_stack_t(v_glo.head);
 	free(v_glo.buffer);
 	fclose(v_glo.fd);
-}
-
-/**
-  * split - splits strings
-  * @line: string to be splitted
-  *
-  * Return: splitted strings
-  */
-
-char *split(char *line)
-{
-	char *delim = " \t\n", *token, *arr[2];
-	int i = 0;
-
-	token = strtok(line, delim);
-	while (token != NULL)
-	{
-		arr[i++] = token;
-		token = strtok(NULL, delim);
-	}
-	return (arr);
 }
 
 
@@ -64,10 +43,11 @@ char *split(char *line)
 int main(int argc, char *argv[])
 {
 	FILE *file;
-	char *str;
-	size_t *size = 200;
+	char *str[2] = {NULL, NULL};
+	size_t size = 120;
 	ssize_t nline;
 	void (*f)(stack_t **stack, unsigned int line_number);
+	char *fil = argv[1];
 
 	if (argc != 2)
 	{
@@ -77,28 +57,25 @@ int main(int argc, char *argv[])
 	file = fopen(argv[1], "r");
 	if (file == NULL)
 	{
-		fprintf(stderr, "Error: Can't open file %s\n", v_glo.fd);
+		fprintf(stderr, "Error: Can't open file %s\n", fil);
 		exit(EXIT_FAILURE);
 	}
 	start_v_glo(file);
 
-	nline = getline(&v_glo.buffer, size, v_glo.fd);
+	nline = getline(&v_glo.buffer, &size, v_glo.fd);
 	while (nline != -1)
 	{
-		str = split(v_glo.buffer);
-		if (str[0] && str[1] != '#')
+		str[0] = strtok(v_glo.buffer, " \t\n");
+		f = get_opcodes(str[0]);
+		if (!f)
 		{
-			f = get_opcode(str[0]);
-			if (!f)
-			{
-				fprintf(stderr, "L%u: ", v_glo.cont);
-				fprintf(stderr, "unknown instruction %s\n", str[0]);
-				free_v_glo();
-				exit(EXIT_FAILURE);
-			}
-			v_glo.arg = str[1];
-			f(&v_glo.head, vglo.cont);
+			fprintf(stderr, "L%u: ", v_glo.cont);
+			dprintf(2, "unknown instruction %s\n", str[0]);
+			free_v_glo();
+			exit(EXIT_FAILURE);
 		}
+		v_glo.arg = strtok(NULL, " \t\n");
+		f(&v_glo.head, v_glo.cont);
 		nline = getline(&v_glo.buffer, &size, v_glo.fd);
 		v_glo.cont++;
 	}
